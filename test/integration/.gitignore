@@ -1,5 +1,7 @@
 /*.check
 /*~
+/*.log
+/*.trs
 /Makefile
 /Makefile.in
 /check-common.sh
@@ -11,3 +13,4 @@
 /test-misc
 /test-setshow
 /test-sig
+/test-interrupt

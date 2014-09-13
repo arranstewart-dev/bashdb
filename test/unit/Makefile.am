@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in -*-Makefile-*-.
 COMBINED_TESTS = $(wildcard test-*.sh)
-TESTS_SOURCES = $(notdir $(COMBINED_TESTS:=.in))
+tests_sources = $(notdir $(COMBINED_TESTS:=.in))
 
 abs_srcdir=@abs_srcdir@
 abs_builddir=@abs_builddir@

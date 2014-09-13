@@ -3,10 +3,24 @@
 t=${0##*/}; TEST_NAME=${t:5}   # basename $0 with 'test-' stripped off
 SH=@SH_PROG@
 
+if [[ $host_os =~ freebsd ]] ; then
+    echo "Skipping on FreeBSD where we get a SEGV"
+    exit 77
+fi
+
 [ -z "$builddir" ] && export builddir=$PWD
 
 . ${builddir}/check-common.sh
 debugged_script="$top_srcdir/test/example/sig.sh"
+
+if (( ${BASH_VERSINFO[0]} == 4 && ${BASH_VERSINFO[1]} >= 3 )) ; then
+    RIGHT_FILE="${top_srcdir}/test/data/${TEST_NAME}-43.right"
+fi
+
+if [[ $host_os =~ freebsd ]] ; then
+    echo "Skipping on FreeBSD where we get a SEGV"
+    exit 77
+fi
 
 FILTERED_TEST_FILE="/tmp/${TEST_NAME}-filtered.check"
 FILTERED_RIGHT_FILE="/tmp/${TEST_NAME}-filtered.right"
@@ -17,7 +31,10 @@ FILTERED_RIGHT_FILE="/tmp/${TEST_NAME}-filtered.right"
 @GREP@ -v '^sig.tests: line 12' $TEST_FILE \
   | @SED@ -e "s:in file \`sig.sh' at line [0-9][0-9]*:in file \`sig.sh' at line 55:" \
   | @SED@ -e "s:in file \`eval.sh' at line [0-9][0-9]*:in file \`eval.sh' at line 55:" \
-  | @GREP@ -v '^sig.tests: line 10:' | @GREP@ -v '^SIGPIPE' >${FILTERED_TEST_FILE}
+  | @SED@ -e "s:bashdb_eval_[0-9][0-9]*:bashdb_eval_5040:" \
+  | @GREP@ -v '^sig.tests: line 10:' | \
+@GREP@ -v '^SIGPIPE' | \
+@GREP@ -v '^SIGPROF' >${FILTERED_TEST_FILE}
 check_output $FILTERED_TEST_FILE $FILTERED_RIGHT_FILE
 rc=$?
 

@@ -1,4 +1,4 @@
-#!/usr/local/bin//bash
+#!@SH_PROG@
 # -*- shell-script -*-
 TEST_NAME='file with spaces'
 
