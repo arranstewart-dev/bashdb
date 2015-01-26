@@ -1,7 +1,7 @@
 # -*- shell-script -*-
 # "set highlight" debugger command
 #
-#   Copyright (C) 2011 Rocky Bernstein <rocky@gnu.org>
+#   Copyright (C) 2011, 2014, 2015 Rocky Bernstein <rocky@gnu.org>
 #
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as
@@ -18,15 +18,30 @@
 #   the Free Software Foundation, 59 Temple Place, Suite 330, Boston,
 #   MA 02111 USA.
 
+if [[ $0 == ${BASH_SOURCE[0]} ]] ; then
+    dirname=${BASH_SOURCE[0]%/*}
+    [[ $dirname == $0 ]] && top_dir='..' || top_dir=${dirname}/..
+    for file in help alias ; do source $top_dir/lib/${file}.sh; done
+fi
+
 _Dbg_help_add_sub set highlight \
-'set highlight [on|off]
+'set highlight [dark|light|off|reset]
 
-Set syntax highlighting of source listings.' 1
+Set using terminal highlight.
 
-_Dbg_next_complete[set highlight]='_Dbg_complete_edit'
+Use "reset" to set highlighting on and force a redo of syntax
+highlighting of already cached files. This may be needed if the
+debugger was started without syntax highlighting initially.
+
+"dark" sets sets for highlighting for a terminal with a dark background and
+"light" set for highlighting for a terminal with a light background.
+
+See also: show highlight.' 1
+
+_Dbg_next_complete[set highlight]='_Dbg_complete_highlight'
 
 _Dbg_complete_highlight() {
-    COMPREPLY=(on off reset)
+    COMPREPLY=(dark light off reset)
 }
 
 _Dbg_do_set_highlight() {
@@ -36,21 +51,24 @@ _Dbg_do_set_highlight() {
 	_Dbg_errmsg "Can't run pygmentize. Setting forced off"
 	return 1
     fi
-    typeset onoff=${1:-'on'}
-    case $onoff in 
-	on | 1 ) 
-	    _Dbg_set_highlight=1
+    typeset onoff=${1:-'light'}
+    case $onoff in
+	on | light )
+	    _Dbg_set_highlight='light'
+	    ;;
+	dark )
+	    _Dbg_set_highlight='dark'
 	    ;;
 	off | 0 )
-	    _Dbg_set_highlight=0
+	    _Dbg_set_highlight=''
 	    ;;
-	reset ) 
-	    _Dbg_set_highlight=1
+	reset )
+	    [[ -z $_Dbg_set_highlight ]] && _Dbg_set_highlight='light'
 	    _Dbg_filecache_reset
 	    _Dbg_readin $_Dbg_frame_last_filename
 	    ;;
 	* )
-	    _Dbg_errmsg '"on", "off", or "reset" expected.'
+	    _Dbg_errmsg '"dark", "light", "off", or "reset" expected.'
 	    return 1
     esac
     _Dbg_do_show highlight

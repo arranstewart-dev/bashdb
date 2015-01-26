@@ -41,7 +41,8 @@ bin_SCRIPTS = bashdb
 MOSTLYCLEANFILES = *.orig *.rej
 
 EXTRA_DIST = bashdb.in bashdb-trace.in bashdb-main.inc.in \
-	     $(pkgdata_DATA) acinclude.m4 THANKS \
+	     compute-prefix.sh \
+	     $(pkgdata_DATA) acinclude.m4 README.md THANKS \
 	     make-check-filter.rb check-prefix.sh \
 	     ChangeLog ChangeLog.0
 
@@ -94,8 +95,12 @@ MAINTAINERCLEANFILES = ChangeLog
 
 if MAINTAINER_MODE
 
+#: Remove change log: ChangeLog
+rmChangeLog:
+	rm ChangeLog || true
+
 #: Create ChangeLog from version control
-ChangeLog:
+ChangeLog: rmChangeLog
 	git log --pretty --numstat --summary | $(GIT2CL) > $@
 
 ACLOCAL_AMFLAGS=-I .

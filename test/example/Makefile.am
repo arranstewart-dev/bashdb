@@ -1,5 +1,7 @@
 check_DATA =            \
 	bug-args.sh.in  \
+	bug-clear.sh    \
+	bug-loc.sh      \
 	bug-step.sh     \
 	bug-step-subshell.sh \
 	bugI.sh         \
@@ -12,6 +14,7 @@ check_DATA =            \
 	gcd.sh          \
 	hanoi.sh.in     \
 	interrupt.sh.in \
+	library.sh      \
 	multi.sh        \
 	nexting.sh      \
 	parm.sh         \

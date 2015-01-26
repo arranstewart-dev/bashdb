@@ -41,6 +41,7 @@ TESTS = \
 	test-bug-args   \
 	test-bugI       \
 	test-bugIFS     \
+	test-bug-loc    \
 	test-bug-source \
 	test-command    \
 	test-complete   \
@@ -60,6 +61,7 @@ TESTS = \
 	test-skip 	\
 	test-sopts 	\
 	test-bug-break 	\
+	test-bug-clear 	\
 	test-bug-step 	\
 	test-subshell 	\
 	test-tbreak	\
